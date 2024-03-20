@@ -1,6 +1,7 @@
 
+
 ```
 -HTML & CSS
-- JAVA
+- JavaScript
 - React
 ```
