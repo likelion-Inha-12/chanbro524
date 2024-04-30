@@ -46,3 +46,11 @@ def delete_post(request, pk):
     }
         return JsonResponse(data, status=200)
     return JsonResponse({'message': 'DELETE 요청만 허용됩니다'})
+
+from django.http import HttpResponse
+
+def get_comment(request, post_id):
+    if request.method =="GET":
+        post = get_object_or_404(Post, pk=post_id)
+        comment_list = post.comments.all()
+        return HttpResponse(comment_list, status=200)
