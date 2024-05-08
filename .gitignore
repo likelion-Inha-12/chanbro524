@@ -2,3 +2,5 @@ db.sqlite3
 migrations
 chanbro
 all
+__pycache__
+All-Git-Github
