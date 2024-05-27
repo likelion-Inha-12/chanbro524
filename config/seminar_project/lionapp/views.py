@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from drf_yasg.utils import swagger_auto_schema
 def create_post(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -59,6 +59,9 @@ def get_comment(request, post_id):
         post = get_object_or_404(Post, pk=post_id)
         comment_list = post.comments.all()
         return HttpResponse(comment_list, status=200)
+from rest_framework.decorators import authentication_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 def api_response(data, message, status):
     response = {
@@ -66,6 +69,29 @@ def api_response(data, message, status):
         "data":data
     }
     return Response(response, status=status)
+from rest_framework_simplejwt.authentication import JWTAuthentication 
+
+class IndexView(APIView):
+		authentication_classes = [JWTAuthentication]
+
+		def post(self, request):
+				return HttpResponse("Post method")
+		def get(self, request):
+		    return HttpResponse("Get method")
+
+@swagger_auto_schema(
+        method="POST", 
+        tags=["첫번째 view"],
+        operation_summary="post 생성", 
+        operation_description="post를 생성합니다.",
+        responses={
+            201: '201에 대한 설명', 
+            400: '400에 대한 설명',
+            500: '500에 대한 설명'
+        }
+)
+
+
 @api_view(['POST'])
 def create_post_v2(request):
     post = Post(
@@ -95,3 +121,9 @@ class PostApiView(APIView):
         
         message = f"id: {pk}번 포스트 삭제 성공"
         return api_response(message = message, status = status.HTTP_200_OK) 
+
+from rest_framework.decorators import authentication_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+

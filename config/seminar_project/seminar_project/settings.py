@@ -31,7 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheader',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    'users',
+    'corsheaders',
     'lionapp',
     'util',
     'rest_framework',
@@ -42,6 +45,28 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+AUTH_USER_MODEL = 'users.User'
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # 인증된 요청인지 확인
+        #'rest_framework.permissions.AllowAny',  # 누구나 접근 가능 
+				# (기본적으로 누구나 접근 가능하게 설정하고, 인증된 요청인지 확인하는 api를 따로 지정하게 하려면 
+				# 이 옵션을 위의 옵션 대신 켜주어도 됩니다!)
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT를 통한 인증방식 사용
+    ),
+}
+REST_USE_JWT = True
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'SIGNING_KEY': 'hellolikelionhellolikelion',
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -119,8 +144,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+import os
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -151,3 +177,18 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_ALL_ORGINS: True
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'BearerAuth': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': "JWT Token"
+        }
+    },
+    'SECURITY_REQUIREMENTS': [{
+        'BearerAuth': []
+    }]
+}
